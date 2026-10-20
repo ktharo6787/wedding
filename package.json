@@ -15,7 +15,10 @@
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
-    "@rolldown/binding-darwin-arm64": "^1.2.14",
     "typescript": "^5.8.3"
+  },
+  "optionalDependencies": {
+    "@rolldown/binding-darwin-arm64": "1.2.14",
+    "@rolldown/binding-linux-x64-gnu": "1.2.14"
   }
 }
