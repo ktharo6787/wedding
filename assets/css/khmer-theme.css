@@ -1,0 +1,178 @@
+:root {
+  --paper: #f7ecda;
+  --sandstone: #e8d7b9;
+  --gold: #b58b4e;
+  --burgundy: #64232b;
+  --ink: #3c271f;
+  color: var(--ink);
+  background: var(--paper);
+}
+
+body { background: var(--paper); }
+.eyebrow, .tracked, .date-line { color: #80523d; }
+.khmer-kicker { font-family: 'Noto Serif Khmer','Khmer MN',serif; font-size: 1.12rem; line-height: 1.8; color: #a67539; margin: 0 0 8px; }
+.gate { background: #4c1821; }
+.gate-left, .gate-right {
+  background-image: linear-gradient(120deg,#39141de8,#63232bea),url('/images/khmer-pattern.svg');
+  background-size: cover, 160px 40px;
+  box-shadow: inset 0 0 100px #230b13ad;
+  border-color: #c69b6080;
+}
+.gate-left::after, .gate-right::after { border-color: #c89c657a; }
+.gate-content { color: #f5e6c9; }
+.gate-content .khmer-kicker { color: #d7b47a; font-size: 1.25rem; }
+.gate-kicker, .gate-date, .gate-hint { color: #e3cda8; }
+.gate-monogram {
+  width: 174px;
+  height: 174px;
+  margin: 22px 0;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  background: url('/images/khmer-lotus.svg') center / contain no-repeat;
+  color: #f6deb2;
+  font-size: 2.15rem;
+  text-shadow: 0 2px 7px #310d17;
+}
+.seal {
+  background: radial-gradient(circle,#d9b973 0,#b98842 70%,#765025 100%);
+  border-color: #e6c98d;
+  color: #502029;
+  box-shadow: 0 0 0 6px #ae7b466e,0 12px 26px #250b1580;
+}
+.seal span { font-size: 1.8rem; }
+.gate-open .seal { box-shadow: none; }
+.music-button { color: #f9edd7; background: var(--burgundy); border: 1px solid var(--gold); }
+.music-button:hover { background: #7a2c34; }
+
+.hero.floral-panel { background-image: url('/images/khmer-frame.png'); background-color: var(--paper); }
+.hero-content { color: var(--ink); }
+.hero-content .eyebrow { color: #91663d; }
+.hero h1 { color: #4b2522; }
+.date-line { color: #6d3a31; }
+.discover { color: #74372f; }
+.floating-petals span {
+  width: 24px;
+  height: 24px;
+  font-size: 0;
+  background: url('/images/khmer-lotus.svg') center / contain no-repeat;
+  filter: drop-shadow(0 2px 3px #5a2a1d2b);
+}
+
+.section {
+  background-color: var(--paper);
+  background-image: url('/images/khmer-pattern.svg');
+  background-size: 160px 40px;
+  background-repeat: repeat-x;
+  background-position: top center;
+  border-top: 1px solid #caa66c66;
+  color: var(--ink);
+}
+.section h2, .section h3 { color: #4d2924; }
+.botanical-top::before, .botanical-top::after { display: none; }
+.small-flourish {
+  width: 75px;
+  height: 75px;
+  margin: 0 auto 18px;
+  font-size: 0;
+  background: url('/images/khmer-lotus.svg') center / contain no-repeat;
+}
+.divider::before, .divider::after, .tiny-rule { background: #c19b64; }
+.divider span { color: var(--gold); }
+.text-action { color: #752f35; border-color: #b48c59; }
+.countdown-grid strong { color: #622b2c; }
+.countdown-grid span { color: #936b4b; }
+.countdown-section { background-color: #f9f0df; }
+
+.venue-section { background-color: #e9dcc3; }
+.venue-aside {
+  color: #5d2a28;
+  border-color: #f8ecd7;
+  outline-color: #a98250;
+  background-image: linear-gradient(#f6e8cebd,#f6e8cebd),url('/images/khmer-frame.png');
+}
+.ornate-card {
+  border-color: #b38a50;
+  outline-color: #b38a50;
+  background: #f9f0df;
+  box-shadow: 0 16px 40px #5b322024;
+}
+.ornate-card::before { content: ''; display: block; width: 100%; height: 30px; margin: -14px 0 24px; background: url('/images/khmer-pattern.svg') center / 120px 30px repeat-x; opacity: .8; }
+.ornate-card .tracked { color: #845b3d; }
+
+.dress-section { background: #55212a; color: #f9ebd3; }
+.dress-section h2, .dress-section h3 { color: #f9ebd3; }
+.dress-copy .eyebrow, .dress-copy .italic { color: #e0bd8c; }
+.dress-art { background: #ead8bb; }
+.dress-art img { mix-blend-mode: normal; box-shadow: 0 12px 35px #4a261a33; }
+.dress-art p { color: #76462f; }
+.timeline-section { background-color: #fbf3e6; }
+.timeline-list::before { border-color: #be9963; }
+.timeline-dot { background: #a7733d; }
+.timeline-symbol { color: #ae8048; }
+.timeline-item strong { color: #6d3030; }
+.recovery-section { background-color: #f2e4cd; }
+.house-drawing, .envelope {
+  width: 120px;
+  height: 120px;
+  margin: 8px auto 18px;
+  font-size: 0;
+  background: url('/images/khmer-lotus.svg') center / contain no-repeat;
+}
+.gifts-section { background-color: #e9d7b7; }
+.gift-frame { background: #fbf1e0; border-color: #aa7f48; box-shadow: inset 0 0 0 9px #fbf1e0,inset 0 0 0 10px #bc9966; }
+.gift-frame::before, .gift-frame::after { color: #a07746; }
+.frame-leaf { width: 80px; height: 80px; font-size: 0; background: url('/images/khmer-lotus.svg') center / contain no-repeat; }
+.bottom-leaf { transform: rotate(180deg); }
+.faq-section { background-color: #fbf3e6; }
+.faq-list, .faq-item { border-color: #c4a779; }
+.faq-item button { color: #5e2c2b; }
+.faq-item button:hover { color: #aa7340; }
+.rsvp-section { background-color: #efe0c6; }
+.rsvp-form input[type=text], .rsvp-form input[type=email], .rsvp-form textarea, .rsvp-form select { background: #fff9ed; border-color: #c9aa79; color: var(--ink); outline-color: var(--gold); }
+.rsvp-form input[type=radio] { accent-color: var(--burgundy); }
+.primary-button { background: var(--burgundy); border-color: var(--burgundy); }
+.primary-button:hover { background: #823440; }
+.rsvp-result pre { background: #fff9ed; border-color: #c9aa79; }
+footer {
+  background: #4d1d26 url('/images/khmer-pattern.svg') top center / 160px 40px repeat-x;
+  color: #f7e8cd;
+  border-top: 2px solid #c7a266;
+}
+footer a { border-color: #c7a266; }
+
+@media (min-width: 900px) {
+  .hero.floral-panel { background: #f7ecda; }
+  .hero-art { background-image: url('/images/khmer-frame.png'); background-color: #e9d1aa; }
+  .hero-art::after { border-color: #e4c088; }
+  .art-caption { color: #6b2e29; background: #f6e7ccdd; }
+  .hero-content { background: radial-gradient(circle,#fff9eb 0,#f5e8d2 100%); min-height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; border-left: 1px solid #b9945f; }
+  .hero-content::before, .hero-content::after { width: 74px; height: 74px; background: url('/images/khmer-lotus.svg') center / contain no-repeat; }
+  .hero-content::before { margin-bottom: 25px; }
+  .hero-content::after { margin-top: 34px; }
+  .countdown-section { background-color: #fbf2e3; }
+  .venue-section { background-color: #e8d7b9; }
+  .dress-section { background: #55212a; }
+  .timeline-section { background-color: #fbf3e6; }
+  .recovery-section { background-color: #f3e5d0; }
+  .gifts-section { background-color: #ead9ba; }
+  .rsvp-section { background-color: #f0dfc3; }
+}
+
+@media (max-width: 899px) {
+  .hero.floral-panel { background-image: url('/images/khmer-frame.png'); background-size: auto 100%; }
+  .hero-content { padding: 20px 3px; }
+  .hero h1 { text-shadow: 0 1px 0 #fff6e8; }
+  .gate-monogram { width: 150px; height: 150px; }
+}
+
+@media (max-width: 600px) {
+  .hero { padding-top: 190px; padding-bottom: 110px; }
+  .hero-content { width: 83%; }
+  .hero .khmer-kicker { font-size: .94rem; }
+  .hero h1 { font-size: clamp(2.35rem, 10.5vw, 3rem); }
+  .gate-content .khmer-kicker { font-size: 1.05rem; }
+  .ornate-card::before { margin-top: -9px; }
+  .dress-art img { max-height: 390px; }
+  .gift-frame { padding-left: 40px; padding-right: 40px; }
+}
