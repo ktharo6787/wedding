@@ -132,6 +132,18 @@ function showToast(message: string, type: 'success' | 'error' | 'info' = 'succes
   toastTimer = setTimeout(() => { toast.value.message = '' }, 2600)
 }
 
+async function prepareWorkspace() {
+  const status = await $fetch<any>('/api/admin/status')
+  projects.value = status.projects || []
+  const savedProjectId = localStorage.getItem('wedding-project-id') || ''
+  selectedProjectId.value = projects.value.some(project => project.id === savedProjectId)
+    ? savedProjectId
+    : projects.value[0]?.id || ''
+  if (selectedProjectId.value) localStorage.setItem('wedding-project-id', selectedProjectId.value)
+  if (!selectedProjectId.value) throw new Error('Your account has no wedding project yet. Please contact support.')
+  await loadData()
+}
+
 async function initialize() {
   loading.value = true
   errorMessage.value = ''
@@ -165,7 +177,7 @@ async function setupOwner() {
     authenticated.value = true
     credentials.password = ''
     credentials.confirm = ''
-    await loadData()
+    await prepareWorkspace()
   } catch (error) {
     errorMessage.value = messageFrom(error)
   }
@@ -177,7 +189,7 @@ async function login() {
     await $fetch('/api/admin/login', { method: 'POST', body: credentials })
     authenticated.value = true
     credentials.password = ''
-    await loadData()
+    await prepareWorkspace()
   } catch (error) {
     errorMessage.value = messageFrom(error)
   }
@@ -661,6 +673,22 @@ function resetTheme() {
   })
 }
 
+function addScheduleItem(kind: 'ceremonyEvents' | 'receptionEvents') {
+  adminData.invitation[kind].push({ time: '', symbol: '✦', title: '', detail: '' })
+}
+
+function removeScheduleItem(kind: 'ceremonyEvents' | 'receptionEvents', index: number) {
+  adminData.invitation[kind].splice(index, 1)
+}
+
+function addDressColor() {
+  adminData.invitation.dressColors.push({ name: '', hex: '#174b3b', detail: '' })
+}
+
+function removeDressColor(index: number) {
+  adminData.invitation.dressColors.splice(index, 1)
+}
+
 onMounted(() => {
   invitationBaseUrl.value = window.location.origin
   const savedTab = window.location.hash.slice(1) || localStorage.getItem('wedding-admin-tab') || ''
@@ -909,6 +937,19 @@ onBeforeUnmount(() => {
               <span class="admin-kicker">EVENT DETAILS</span><h2>Date, time and venue</h2>
               <div class="form-grid two"><label>Event starts<input v-model="adminData.invitation.date"></label><label>Calendar event ends<input v-model="adminData.invitation.calendarEnd"></label><label>Date label<input v-model="adminData.invitation.dateLabel"></label><label>RSVP deadline<input v-model="adminData.invitation.rsvpDeadline"></label><label>Ceremony time<input v-model="adminData.invitation.ceremonyTime"></label><label>Reception time<input v-model="adminData.invitation.receptionTime"></label></div>
               <label>Venue name<input v-model="adminData.invitation.venue"></label><label>Venue location<input v-model="adminData.invitation.venueLocation"></label><label>Map address<input v-model="adminData.invitation.venueAddress"></label>
+              <div class="admin-subsection"><h3>Ceremony location & map</h3><div class="form-grid two"><label>Venue name<input v-model="adminData.invitation.ceremonyVenue"></label><label>Map address<input v-model="adminData.invitation.ceremonyAddress"></label><label>Map link (optional)<input v-model="adminData.invitation.ceremonyMapUrl" placeholder="Google Maps URL"></label></div></div>
+              <div class="admin-subsection"><h3>Reception location & map</h3><div class="form-grid two"><label>Venue name<input v-model="adminData.invitation.receptionVenue"></label><label>Map address<input v-model="adminData.invitation.receptionAddress"></label><label>Map link (optional)<input v-model="adminData.invitation.receptionMapUrl" placeholder="Google Maps URL"></label></div></div>
+              <div v-for="kind in [{ key: 'ceremonyEvents', title: 'Ceremony schedule' }, { key: 'receptionEvents', title: 'Reception schedule' }]" :key="kind.key" class="admin-subsection">
+                <div class="card-heading"><h3>{{ kind.title }}</h3><button type="button" class="text-button" @click="addScheduleItem(kind.key)">+ Add event</button></div>
+                <div v-for="(item, index) in adminData.invitation[kind.key]" :key="index" class="schedule-editor-row">
+                  <div class="form-grid two"><label>Time<input v-model="item.time" placeholder="e.g. 6:00 PM"></label><label>Icon<input v-model="item.symbol" maxlength="8"></label><label>Event title<input v-model="item.title"></label><label>Description<input v-model="item.detail"></label></div>
+                  <button type="button" class="text-button danger" @click="removeScheduleItem(kind.key, index)">Remove event</button>
+                </div>
+              </div>
+              <div class="admin-subsection"><div class="card-heading"><h3>Dress code & color guide</h3><button type="button" class="text-button" @click="addDressColor">+ Add color</button></div>
+                <label>Dress code<input v-model="adminData.invitation.dressCode"></label>
+                <div v-for="(color, index) in adminData.invitation.dressColors" :key="index" class="dress-color-editor"><label>Color name<input v-model="color.name" placeholder="Color name"></label><label>Swatch<input v-model="color.hex" type="color"></label><label>Guest-facing details<input v-model="color.detail" placeholder="Describe the color or outfit suggestion"></label><button type="button" class="text-button danger" @click="removeDressColor(index)">Remove</button></div>
+              </div>
               <label v-for="(_, index) in adminData.invitation.khmerEventDetails" :key="index">Khmer event line {{ index + 1 }}<input v-model="adminData.invitation.khmerEventDetails[index]"></label>
             </article>
 

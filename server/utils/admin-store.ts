@@ -133,9 +133,19 @@ function hydrateTheme(raw?: Partial<WeddingTheme> | null): WeddingTheme {
 }
 
 function hydrateInvitation(raw?: Partial<typeof invitationDefaults> | null) {
+  const oldSampleSchedules = [
+    ['6:00 AM|7:00 AM|8:00 AM|10:30 AM', 'ពិធីសែនព្រេន|ពិធីហែជំនូន|ពិធីសូត្រមន្ត|ពិធីចងដៃ'],
+    ['5:00 AM|7:00 AM|8:00 AM|8:45 AM|9:00 AM|10:30 AM|11:30 AM|5:00 PM', 'ពិធីសែនព្រេន|ពិធីហែជំនូន|ពិធីទទួលជំនូន|ពិធីសូត្រមន្ត|ពិធីកាត់សក់|ពិធីចងដៃ|ពិធីជូនពរ និងថតរូប|ទទួលភ្ញៀវពេលល្ងាច']
+  ]
+  const savedSchedule = Array.isArray(raw?.ceremonyEvents) ? raw.ceremonyEvents : []
+  const savedTimes = savedSchedule.map((event: any) => String(event?.time || '')).join('|')
+  const savedTitles = savedSchedule.map((event: any) => String(event?.title || '')).join('|')
+  const shouldRefreshOldSample = oldSampleSchedules.some(([times, titles]) => savedTimes === times && savedTitles === titles)
   return {
     ...structuredClone(invitationDefaults),
     ...(raw || {}),
+    ceremonyTime: raw?.ceremonyTime === '5:00 AM' || shouldRefreshOldSample ? invitationDefaults.ceremonyTime : raw?.ceremonyTime || invitationDefaults.ceremonyTime,
+    ceremonyEvents: shouldRefreshOldSample ? structuredClone(invitationDefaults.ceremonyEvents) : raw?.ceremonyEvents || invitationDefaults.ceremonyEvents,
     couple: { ...invitationDefaults.couple, ...(raw?.couple || {}) },
     parents: {
       groom: raw?.parents?.groom || invitationDefaults.parents.groom,

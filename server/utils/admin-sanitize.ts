@@ -47,7 +47,12 @@ export function sanitizeAdminPayload(payload: any, current: WeddingProject) {
     parents: {
       groom: Array.isArray(invitationInput.parents?.groom) ? invitationInput.parents.groom.map(String).slice(0, 4) : current.invitation.parents.groom,
       bride: Array.isArray(invitationInput.parents?.bride) ? invitationInput.parents.bride.map(String).slice(0, 4) : current.invitation.parents.bride
-    }
+    },
+    ceremonyEvents: sanitizeSchedule(invitationInput.ceremonyEvents, current.invitation.ceremonyEvents),
+    receptionEvents: sanitizeSchedule(invitationInput.receptionEvents, current.invitation.receptionEvents),
+    dressColors: sanitizeDressColors(invitationInput.dressColors, current.invitation.dressColors),
+    ceremonyMapUrl: safeMapUrl(invitationInput.ceremonyMapUrl, current.invitation.ceremonyMapUrl),
+    receptionMapUrl: safeMapUrl(invitationInput.receptionMapUrl, current.invitation.receptionMapUrl)
   }
 
   return {
@@ -56,4 +61,28 @@ export function sanitizeAdminPayload(payload: any, current: WeddingProject) {
     theme,
     invitation
   }
+}
+
+function sanitizeSchedule(value: unknown, fallback: any[]) {
+  if (!Array.isArray(value)) return fallback
+  return value.slice(0, 50).map((item: any) => ({
+    time: String(item?.time || '').slice(0, 40),
+    symbol: String(item?.symbol || '✦').slice(0, 8),
+    title: String(item?.title || '').slice(0, 160),
+    detail: String(item?.detail || '').slice(0, 500)
+  }))
+}
+
+function sanitizeDressColors(value: unknown, fallback: any[]) {
+  if (!Array.isArray(value)) return fallback
+  return value.slice(0, 16).map((item: any) => ({
+    name: String(item?.name || '').slice(0, 60),
+    hex: safeColor(item?.hex, '#174b3b'),
+    detail: String(item?.detail || '').slice(0, 500)
+  }))
+}
+
+function safeMapUrl(value: unknown, fallback: string) {
+  const url = String(value || '').trim().slice(0, 1000)
+  return /^https:\/\//i.test(url) ? url : fallback
 }

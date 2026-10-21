@@ -61,23 +61,11 @@ const rsvp = reactive({ name: '', attending: 'yes', guests: '1', note: '' })
 let ticker: ReturnType<typeof setInterval> | undefined
 let revealObserver: IntersectionObserver | undefined
 
-const programmes = {
-  ceremony: [
-    { time: '6:00 AM', symbol: '✧', title: 'ពិធីសែនព្រេន', detail: 'ការរៀបចំពិធីតាមប្រពៃណីខ្មែរ' },
-    { time: '7:00 AM', symbol: '♧', title: 'ពិធីហែជំនូន', detail: 'ស្វាគមន៍ក្រុមគ្រួសារ និងភ្ញៀវកិត្តិយស' },
-    { time: '8:00 AM', symbol: '❀', title: 'ពិធីសូត្រមន្ត', detail: 'ទទួលពរជ័យសម្រាប់គូស្វាមីភរិយា' },
-    { time: '8:45 AM', symbol: '◈', title: 'ពិធីប្រពៃណី', detail: 'ប្រារព្ធពិធីដ៏មានអត្ថន័យជាមួយក្រុមគ្រួសារ' },
-    { time: '9:00 AM', symbol: '✂︎', title: 'ពិធីកាត់សក់', detail: 'ពិធីតាមទំនៀមទម្លាប់ខ្មែរ' },
-    { time: '10:30 AM', symbol: '∞', title: 'ពិធីចងដៃ', detail: 'ពិធីចងដៃ និងទទួលពរជ័យពីក្រុមគ្រួសារ និងភ្ញៀវកិត្តិយស' },
-    { time: '11:30 AM', symbol: '♡', title: 'ថតរូបអនុស្សាវរីយ៍', detail: 'ចងចាំពេលវេលាដ៏ស្រស់ស្អាតជាមួយគ្នា' },
-    { time: '5:00 PM', symbol: '♫', title: 'ទទួលភ្ញៀវពេលល្ងាច', detail: 'អញ្ជើញចូលរួមអបអរសាទរ និងពិសាអាហារពេលល្ងាច' }
-  ],
-  reception: [
-    { time: '5:00 PM', symbol: '✧', title: 'ស្វាគមន៍ភ្ញៀវ', detail: 'ទទួលភ្ញៀវ និងថតរូបអនុស្សាវរីយ៍' },
-    { time: '6:00 PM', symbol: '❀', title: 'ពិសាអាហារពេលល្ងាច', detail: 'ចែករំលែកអាហារ និងសេចក្តីរីករាយ' },
-    { time: '7:00 PM', symbol: '♫', title: 'អបអរសាទរគូស្វាមីភរិយា', detail: 'តន្ត្រី ការជូនពរ និងការរាំកម្សាន្ត' }
-  ]
-}
+const currentProgramme = computed(() => activeProgramme.value === 'ceremony'
+  ? invitation.ceremonyEvents || []
+  : invitation.receptionEvents || [])
+const selectedDressColorIndex = ref(0)
+const selectedDressColor = computed(() => invitation.dressColors?.[selectedDressColorIndex.value] || null)
 
 const dateParts = computed(() => {
   const [year, monthNumber, day] = invitation.date.slice(0, 10).split('-')
@@ -313,7 +301,7 @@ onBeforeUnmount(() => {
       <div class="section-heading"><span class="micro-label">THE WEDDING PROGRAMME</span><p class="khmer" lang="km">{{ activeProgramme === 'ceremony' ? 'ពិធីមង្គលការ' : 'ទទួលភ្ញៀវ' }}</p><h2>{{ activeProgramme === 'ceremony' ? 'Ceremony' : 'Reception' }}</h2><p class="section-subtitle">{{ theme.content.programmeSubtitle }}</p></div>
       <div class="programme-card ornament-frame">
         <div class="segment-control" aria-label="Programme"><button type="button" :class="{ active: activeProgramme === 'ceremony' }" :aria-pressed="activeProgramme === 'ceremony'" @click="activeProgramme = 'ceremony'">CEREMONY</button><button type="button" :class="{ active: activeProgramme === 'reception' }" :aria-pressed="activeProgramme === 'reception'" @click="activeProgramme = 'reception'">RECEPTION</button></div>
-        <Transition name="programme" mode="out-in"><ol :key="activeProgramme" class="programme-list"><li v-for="item in programmes[activeProgramme]" :key="item.time"><span class="programme-icon" aria-hidden="true">{{ item.symbol }}</span><span class="programme-point" aria-hidden="true">✦</span><div><time>{{ item.time }}</time><h3 class="khmer" lang="km">{{ item.title }}</h3><p class="khmer" lang="km">{{ item.detail }}</p></div></li></ol></Transition>
+        <Transition name="programme" mode="out-in"><ol :key="activeProgramme" class="programme-list"><li v-for="(item, index) in currentProgramme" :key="`${item.time}-${index}`"><span class="programme-icon" aria-hidden="true">{{ item.symbol }}</span><span class="programme-point" aria-hidden="true">✦</span><div><time>{{ item.time }}</time><h3 class="khmer" lang="km">{{ item.title }}</h3><p class="khmer" lang="km">{{ item.detail }}</p></div></li></ol></Transition>
         <p class="programme-footnote">The programme is a guide; please confirm ritual wording and times before sharing.</p>
       </div>
     </section>
@@ -324,7 +312,7 @@ onBeforeUnmount(() => {
       <div class="details-grid">
         <article class="detail-card ornament-frame"><span class="detail-icon" aria-hidden="true">◇</span><span class="micro-label">THE DATE</span><h3>{{ invitation.dateLabel }}</h3><p>Ceremony at {{ invitation.ceremonyTime }}<br>Reception at {{ invitation.receptionTime }}</p><a class="outline-button" :href="calendarUrl" target="_blank" rel="noopener noreferrer" aria-label="Open wedding event in Google Calendar">ADD TO GOOGLE CALENDAR ↗</a></article>
         <article class="detail-card ornament-frame"><span class="detail-icon" aria-hidden="true">⌖</span><span class="micro-label">THE VENUE</span><h3>{{ invitation.venue }}</h3><p>{{ invitation.venueLocation }}<template v-if="invitation.venueAddress"><br>{{ invitation.venueAddress }}</template></p><a v-if="invitation.venueAddress" class="outline-button" :href="mapUrl" target="_blank" rel="noopener noreferrer">OPEN MAP ↗</a><span v-else class="detail-note">Location details coming soon</span></article>
-        <article class="detail-card dress-detail ornament-frame"><span class="detail-icon" aria-hidden="true">✧</span><span class="micro-label">DRESS CODE</span><h3>{{ invitation.dressCode }}</h3><p>Dress for a joyful celebration.</p><div class="palette" aria-label="Suggested elegant color palette"><span></span><span></span><span></span><span></span></div></article>
+        <article class="detail-card dress-detail ornament-frame"><span class="detail-icon" aria-hidden="true">✧</span><span class="micro-label">DRESS CODE</span><h3>{{ invitation.dressCode }}</h3><p>Choose a color to see its style notes.</p><div class="palette" aria-label="Suggested dress colors"><button v-for="(color, index) in invitation.dressColors || []" :key="`${color.name}-${index}`" type="button" :class="{ selected: selectedDressColorIndex === index }" :style="{ '--dress-swatch': color.hex }" :aria-label="`Show ${color.name} dress color details`" :aria-pressed="selectedDressColorIndex === index" @click="selectedDressColorIndex = index"><span></span></button></div><div v-if="selectedDressColor" class="dress-color-detail" aria-live="polite"><strong>{{ selectedDressColor.name }}</strong><p>{{ selectedDressColor.detail }}</p></div></article>
       </div>
     </section>
 
