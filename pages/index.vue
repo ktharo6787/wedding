@@ -267,7 +267,6 @@ onBeforeUnmount(() => {
         <img class="khmer-title-emblem" :src="theme.heroEmblemImage" alt="Wedding monogram">
         <img v-if="theme.frameImage" class="custom-frame-overlay" :src="theme.frameImage" alt="" aria-hidden="true">
         <div class="hero-copy text-only-invitation">
-          <p v-if="guestName" class="guest-greeting">DEAR {{ guestName.toUpperCase() }},</p>
           <p class="khmer invitation-heading" lang="km">សិរីសួស្តីអាពាហ៍ពិពាហ៍</p>
           <div class="parent-columns" aria-label="Parents of the groom and bride">
             <div class="parent-family">
